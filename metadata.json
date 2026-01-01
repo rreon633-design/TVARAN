@@ -1,0 +1,8 @@
+{
+  "name": "TVARAN Browser Shell",
+  "description": "A high-performance, workspace-centric desktop browser shell with vertical tabs, split-view, and integrated Local AI (simulated via Gemini).",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
