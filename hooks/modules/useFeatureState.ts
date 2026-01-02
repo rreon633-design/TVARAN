@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Extension, InstalledPWA, Collection, ShoppingProduct, WalletAccount } from '../../types';
 
@@ -21,7 +20,14 @@ export const useFeatureState = () => {
 
   const [shoppingProduct, setShoppingProduct] = useState<ShoppingProduct | undefined>(undefined);
   const [walletAccount, setWalletAccount] = useState<WalletAccount | undefined>(undefined);
+  
+  // Feature Toggles & UI States
   const [isDevToolsOpen, setIsDevToolsOpen] = useState(false);
+  const [isTranslationBarVisible, setIsTranslationBarVisible] = useState(false);
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+  const [isPDFViewerOpen, setIsPDFViewerOpen] = useState(false);
+  const [isFindBarOpen, setIsFindBarOpen] = useState(false);
+  const [isPageInfoOpen, setIsPageInfoOpen] = useState(false);
 
   return {
     extensions, setExtensions,
@@ -29,6 +35,11 @@ export const useFeatureState = () => {
     collections, setCollections,
     shoppingProduct, setShoppingProduct,
     walletAccount, setWalletAccount,
-    isDevToolsOpen, setIsDevToolsOpen
+    isDevToolsOpen, setIsDevToolsOpen,
+    isTranslationBarVisible, setIsTranslationBarVisible,
+    isPrintPreviewOpen, setIsPrintPreviewOpen,
+    isPDFViewerOpen, setIsPDFViewerOpen,
+    isFindBarOpen, setIsFindBarOpen,
+    isPageInfoOpen, setIsPageInfoOpen
   };
 };

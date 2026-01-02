@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { X, ExternalLink, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { WebPanel as WebPanelType } from '../types';
@@ -10,7 +9,7 @@ interface WebPanelProps {
 
 const WebPanel: React.FC<WebPanelProps> = ({ panel, onClose }) => {
   return (
-    <div className="w-96 h-full bg-[#0a0a0a] border-l border-white/10 flex flex-col animate-in slide-in-from-right duration-300 shadow-2xl relative z-40">
+    <div className="w-full md:w-96 h-full bg-[#0a0a0a] border-l border-white/10 flex flex-col animate-in slide-in-from-right duration-300 shadow-2xl relative z-40 fixed md:relative inset-y-0 right-0">
       <div className="p-4 border-b border-white/5 bg-black/40 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37]">

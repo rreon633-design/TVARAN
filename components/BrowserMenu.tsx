@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import { Minus, Plus, Printer, Search, History, Download, Settings as SettingsIcon, Code } from 'lucide-react';
 import { SidebarMode } from '../types';
@@ -11,9 +10,11 @@ interface BrowserMenuProps {
   onZoomOut: () => void;
   onSetSidebarMode: (mode: SidebarMode) => void;
   onToggleDevTools?: () => void;
+  onOpenPrint?: () => void;
+  onOpenFind?: () => void;
 }
 
-const BrowserMenu: React.FC<BrowserMenuProps> = ({ isOpen, onClose, zoom, onZoomIn, onZoomOut, onSetSidebarMode, onToggleDevTools }) => {
+const BrowserMenu: React.FC<BrowserMenuProps> = ({ isOpen, onClose, zoom, onZoomIn, onZoomOut, onSetSidebarMode, onToggleDevTools, onOpenPrint, onOpenFind }) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,13 +43,13 @@ const BrowserMenu: React.FC<BrowserMenuProps> = ({ isOpen, onClose, zoom, onZoom
       </div>
 
       <div className="space-y-0.5">
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-left transition-all text-xs font-medium text-white/60 hover:text-white group">
+        <button onClick={() => { onOpenPrint?.(); onClose(); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-left transition-all text-xs font-medium text-white/60 hover:text-white group">
           <div className="p-2 bg-white/5 rounded-lg group-hover:bg-[#D4AF37]/10 group-hover:text-[#D4AF37]">
             <Printer size={16} />
           </div>
           Print Page
         </button>
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-left transition-all text-xs font-medium text-white/60 hover:text-white group">
+        <button onClick={() => { onOpenFind?.(); onClose(); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-left transition-all text-xs font-medium text-white/60 hover:text-white group">
           <div className="p-2 bg-white/5 rounded-lg group-hover:bg-[#D4AF37]/10 group-hover:text-[#D4AF37]">
             <Search size={16} />
           </div>

@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import BrowserWindow from './components/BrowserWindow';
 import AISidebar from './components/AISidebar';
@@ -11,24 +10,40 @@ import { useAppLogic } from './hooks/useAppLogic';
 
 const App: React.FC = () => {
   const { state, actions } = useAppLogic();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   return (
     <div className={`flex h-screen overflow-hidden font-sans relative transition-colors duration-500 ${state.isStormMode ? 'bg-[#0a0514] text-purple-100' : 'bg-[#050505] text-[#F5F5F5]'}`}>
+      
+      {/* Mobile Backdrop */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       <Sidebar 
         tabs={state.tabs} groups={state.groups} activeTabId={state.activeTabId} isStormMode={state.isStormMode}
         miniSidebar={state.settings.miniSidebar}
         webPanels={state.initialPanels}
         activePanelId={state.activePanelId}
         onTogglePanel={(id) => actions.setActivePanelId(prev => prev === id ? null : id)}
-        onSelectTab={(id) => { actions.setActiveTabId(id); actions.setTabs(prev => prev.map(t => t.id === id ? {...t, isActive: true, isSleeping: false, isDiscarded: false} : {...t, isActive: false})); }} 
+        onSelectTab={(id) => { 
+          actions.setActiveTabId(id); 
+          actions.setTabs(prev => prev.map(t => t.id === id ? {...t, isActive: true, isSleeping: false, isDiscarded: false} : {...t, isActive: false}));
+          setIsMobileMenuOpen(false); // Close mobile menu on selection
+        }} 
         onCloseTab={actions.handleCloseTab} 
-        onNewTab={() => actions.handleNewTab()} 
-        onOpenCommand={() => actions.setIsCommandOpen(true)} 
+        onNewTab={() => { actions.handleNewTab(); setIsMobileMenuOpen(false); }} 
+        onNewGroup={actions.handleNewGroup}
+        onOpenCommand={() => { actions.setIsCommandOpen(true); setIsMobileMenuOpen(false); }} 
         onToggleMute={(id) => actions.setTabs(p => p.map(t => t.id === id ? { ...t, isMuted: !t.isMuted } : t))}
         onTogglePin={(id) => actions.setTabs(p => p.map(t => t.id === id ? { ...t, isPinned: !t.isPinned } : t))} 
-        onSetSidebarMode={actions.setSidebarMode} 
+        onSetSidebarMode={(mode) => { actions.setSidebarMode(mode); setIsMobileMenuOpen(false); }} 
         onToggleGroupCollapse={(id) => actions.setGroups(p => p.map(g => g.id === id ? { ...g, isCollapsed: !g.isCollapsed } : g))}
         onReorderTabs={() => {}}
+        isMobileOpen={isMobileMenuOpen}
       />
 
       <main className="flex-1 flex flex-row overflow-hidden border-r border-white/5 relative">
@@ -48,8 +63,28 @@ const App: React.FC = () => {
           onInstallApp={actions.handleInstallApp}
           devices={state.devices}
           onSendToDevice={(id) => alert(`Sent tab to device ${id}`)}
+          
           isDevToolsOpen={state.isDevToolsOpen}
           onToggleDevTools={() => actions.setIsDevToolsOpen(!state.isDevToolsOpen)}
+          isTranslationBarVisible={state.isTranslationBarVisible}
+          onCloseTranslationBar={() => actions.setIsTranslationBarVisible(false)}
+          
+          isPrintPreviewOpen={state.isPrintPreviewOpen}
+          onClosePrintPreview={() => actions.setIsPrintPreviewOpen(false)}
+          onOpenPrint={() => actions.setIsPrintPreviewOpen(true)}
+          
+          isPDFViewerOpen={state.isPDFViewerOpen}
+          onClosePDFViewer={() => actions.setIsPDFViewerOpen(false)}
+          
+          isFindBarOpen={state.isFindBarOpen}
+          onCloseFindBar={() => actions.setIsFindBarOpen(false)}
+          onOpenFind={() => actions.setIsFindBarOpen(true)}
+
+          isPageInfoOpen={state.isPageInfoOpen}
+          onTogglePageInfo={() => actions.setIsPageInfoOpen(!state.isPageInfoOpen)}
+          
+          // Mobile Handling
+          onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         />
         
         {state.activePanelId && (

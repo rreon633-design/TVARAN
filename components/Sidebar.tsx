@@ -1,8 +1,7 @@
-
 import React from 'react';
-import { Plus, ChevronDown, Monitor, Search, Zap, Settings, Download, History, User, Puzzle, Layers, ShoppingBag, Wallet, LayoutGrid } from 'lucide-react';
+import { Search, Zap, Settings, History, User, Puzzle, Layers, ShoppingBag, Wallet } from 'lucide-react';
 import { Tab, TabGroup, SidebarMode, WebPanel } from '../types';
-import TabItem from './TabItem';
+import TabList from './sidebar/TabList';
 import IconRenderer from './IconRenderer';
 
 interface SidebarProps {
@@ -17,17 +16,19 @@ interface SidebarProps {
   onSelectTab: (id: string) => void;
   onCloseTab: (id: string) => void;
   onNewTab: () => void;
+  onNewGroup: () => void;
   onOpenCommand: () => void;
   onToggleMute: (tabId: string) => void;
   onTogglePin: (tabId: string) => void;
   onSetSidebarMode: (mode: SidebarMode) => void;
   onToggleGroupCollapse: (groupId: string) => void;
   onReorderTabs: (draggedTabId: string, targetGroupId: string | undefined, targetTabId: string | undefined) => void;
+  isMobileOpen?: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
   tabs, groups, activeTabId, isStormMode, miniSidebar, webPanels, activePanelId, onTogglePanel,
-  onSelectTab, onCloseTab, onNewTab, onOpenCommand, onToggleMute, onTogglePin, onSetSidebarMode, onToggleGroupCollapse, onReorderTabs
+  onSelectTab, onCloseTab, onNewTab, onNewGroup, onOpenCommand, onToggleMute, onTogglePin, onSetSidebarMode, onToggleGroupCollapse, onReorderTabs, isMobileOpen = false
 }) => {
   const pinnedTabs = tabs.filter(t => t.isPinned);
   const unpinnedTabs = tabs.filter(t => !t.isPinned);
@@ -48,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   return (
-    <div className="flex h-full transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] z-50">
+    <div className={`flex h-full z-50 transition-transform duration-300 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} fixed md:relative inset-y-0 left-0 shadow-2xl md:shadow-none`}>
       {/* App Strip (Mini vertical bar for panels) */}
       <div className="w-16 bg-[#080808] border-r border-white/5 flex flex-col items-center py-6 gap-3 z-50 shadow-xl">
         <div className="mb-2">
@@ -116,56 +117,22 @@ const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto px-3 space-y-6 scrollbar-hide pb-20 relative z-10">
-          {pinnedTabs.length > 0 && (
-            <div className={`grid ${miniSidebar ? 'grid-cols-1' : 'grid-cols-4'} gap-2`}>
-              {pinnedTabs.map(tab => (
-                <TabItem key={tab.id} tab={tab} isActive={tab.id === activeTabId} isStormMode={isStormMode} onSelect={onSelectTab} onClose={onCloseTab} onToggleMute={onToggleMute} onTogglePin={onTogglePin} mini={miniSidebar} />
-              ))}
-            </div>
-          )}
-
-          <div className="space-y-6">
-            {!miniSidebar && (
-              <div className="px-2 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
-                  <Monitor size={12} /> <span>Workspaces</span>
-                </div>
-                <button onClick={onNewTab} className="text-[#D4AF37] hover:bg-[#D4AF37]/10 p-1.5 rounded-lg transition-all"><Plus size={14} /></button>
-              </div>
-            )}
-
-            <div className="space-y-2">
-              {groups.map(group => {
-                const groupTabs = unpinnedTabs.filter(t => t.groupId === group.id);
-                if (groupTabs.length === 0) return null;
-                
-                return (
-                  <div key={group.id} className="space-y-1">
-                    {!miniSidebar && (
-                      <div onClick={() => onToggleGroupCollapse(group.id)} className="flex items-center justify-between px-2 py-1.5 text-[10px] font-bold uppercase cursor-pointer hover:bg-white/5 rounded-lg transition-colors group/header select-none">
-                        <div className="flex items-center gap-2.5">
-                          <div className={`w-2 h-2 rounded-full ring-2 ring-opacity-20 ring-${group.color}`} style={{ backgroundColor: group.color }} />
-                          <span className="text-white/40 group-hover/header:text-white transition-colors">{group.name}</span>
-                        </div>
-                        <ChevronDown size={12} className={`transition-transform duration-300 text-white/20 group-hover/header:text-white/60 ${group.isCollapsed ? '-rotate-90' : ''}`} />
-                      </div>
-                    )}
-                    <div className={`${group.isCollapsed && !miniSidebar ? 'max-h-0 opacity-0' : 'max-h-[1000px] opacity-100'} overflow-hidden transition-all duration-300 space-y-1`}>
-                      {groupTabs.map(tab => <TabItem key={tab.id} tab={tab} isActive={tab.id === activeTabId} isStormMode={isStormMode} onSelect={onSelectTab} onClose={onCloseTab} onToggleMute={onToggleMute} onTogglePin={onTogglePin} mini={miniSidebar} />)}
-                    </div>
-                  </div>
-                );
-              })}
-              
-              <div className="mt-6 pt-4 border-t border-white/5">
-                {!miniSidebar && <div className="px-2 mb-2 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">Unsorted</div>}
-                <div className="space-y-1">
-                  {unpinnedTabs.filter(t => !t.groupId).map(tab => <TabItem key={tab.id} tab={tab} isActive={tab.id === activeTabId} isStormMode={isStormMode} onSelect={onSelectTab} onClose={onCloseTab} onToggleMute={onToggleMute} onTogglePin={onTogglePin} mini={miniSidebar} />)}
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="flex-1 overflow-y-auto px-3 pb-20 relative z-10 scrollbar-hide">
+          <TabList 
+            pinnedTabs={pinnedTabs} 
+            unpinnedTabs={unpinnedTabs} 
+            groups={groups} 
+            activeTabId={activeTabId} 
+            isStormMode={isStormMode} 
+            miniSidebar={miniSidebar}
+            onSelectTab={onSelectTab}
+            onCloseTab={onCloseTab}
+            onToggleMute={onToggleMute}
+            onTogglePin={onTogglePin}
+            onToggleGroupCollapse={onToggleGroupCollapse}
+            onNewTab={onNewTab}
+            onNewGroup={onNewGroup}
+          />
         </div>
       </div>
     </div>

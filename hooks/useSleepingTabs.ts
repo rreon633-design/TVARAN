@@ -1,5 +1,5 @@
-
-import { useEffect } from 'react';
+// Fix: Import React to resolve namespace error for React.Dispatch and React.SetStateAction
+import React, { useEffect } from 'react';
 import { Tab, BrowserSettings } from '../types';
 
 export function useSleepingTabs(

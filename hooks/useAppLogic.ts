@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect } from 'react';
 import { Tab, SidebarMode, WebPanel as WebPanelType, NotebookEntry, InstalledPWA } from '../types';
 import { INITIAL_TABS } from '../constants';
@@ -39,14 +38,18 @@ export const useAppLogic = () => {
         e.preventDefault();
         featureState.setIsDevToolsOpen(prev => !prev);
       }
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'i') {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
         e.preventDefault();
-        featureState.setIsDevToolsOpen(prev => !prev);
+        featureState.setIsPrintPreviewOpen(true);
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        featureState.setIsFindBarOpen(true);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [featureState.setIsDevToolsOpen]);
+  }, [featureState.setIsDevToolsOpen, featureState.setIsPrintPreviewOpen, featureState.setIsFindBarOpen]);
 
   // --- Actions ---
 
@@ -54,6 +57,12 @@ export const useAppLogic = () => {
     if (url.startsWith('mailto:')) {
       window.alert(`System Handler: Opening default mail client for ${url}`);
       return;
+    }
+    
+    // PDF Detection
+    if (url.endsWith('.pdf')) {
+       featureState.setIsPDFViewerOpen(true);
+       return;
     }
 
     // Shopping Detection Mock
@@ -111,6 +120,17 @@ export const useAppLogic = () => {
     tabState.setActiveTabId(newId);
   }, [tabState.setTabs, tabState.setActiveTabId]);
 
+  const handleNewGroup = useCallback(() => {
+    const newGroup = {
+      id: Math.random().toString(36).substr(2, 9),
+      name: 'New Workspace',
+      color: '#60A5FA', // Default Blue-ish
+      isCollapsed: false,
+      icon: 'folder'
+    };
+    tabState.setGroups(prev => [...prev, newGroup]);
+  }, [tabState.setGroups]);
+
   const handleCloseTab = useCallback((id: string) => {
     tabState.setTabs(prev => {
       if (prev.length === 1) return prev;
@@ -131,7 +151,11 @@ export const useAppLogic = () => {
     } else {
       switch (action) {
         case 'new-tab': handleNewTab(); break;
+        case 'new-group': handleNewGroup(); break;
         case 'summarize': tabState.setSidebarMode(SidebarMode.Cortex); break;
+        case 'translate': featureState.setIsTranslationBarVisible(true); break;
+        case 'print': featureState.setIsPrintPreviewOpen(true); break;
+        case 'find': featureState.setIsFindBarOpen(true); break;
         case 'passwords': tabState.setSidebarMode(SidebarMode.Passwords); break;
         case 'history': tabState.setSidebarMode(SidebarMode.History); break;
         case 'downloads': tabState.setSidebarMode(SidebarMode.Downloads); break;
@@ -227,6 +251,7 @@ export const useAppLogic = () => {
       ...featureState,
       handleNavigate,
       handleNewTab,
+      handleNewGroup,
       handleCloseTab,
       handleCommandAction,
       handleSaveHighlight,

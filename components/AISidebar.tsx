@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Sparkles, X, Settings as SettingsIcon, History as HistoryIcon, LayoutList, Download, User, CreditCard, Key, UserCheck, Activity, Database, BookMarked, Smartphone, Cloud, Building2, Puzzle, Layers, ShoppingBag, Wallet, Search } from 'lucide-react';
 import { SidebarMode, SearchEngine, Tab, HistoryItem, DownloadItem, AutofillProfile, PaymentMethod, PasswordCredential, BrowserSettings, NotebookEntry, SiteStorageEntry, UserProfile, SyncConfig, ConnectedDevice, EnterprisePolicy, Extension, InstalledPWA, Collection, ShoppingProduct, WalletAccount } from '../types';
@@ -173,7 +172,7 @@ const AISidebar: React.FC<AISidebarProps> = (props) => {
     };
 
     return (
-        <aside className="w-96 h-full bg-black border-l border-white/5 flex flex-col shadow-2xl z-40 animate-in slide-in-from-right-8 duration-300">
+        <aside className="w-full md:w-96 h-full bg-black border-l border-white/5 flex flex-col shadow-2xl z-50 fixed md:relative right-0 animate-in slide-in-from-right-full md:slide-in-from-right-8 duration-300">
             <div className="p-4 border-b border-white/5 flex items-center justify-between bg-[#0c0c0c]/80 backdrop-blur-xl shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37]">

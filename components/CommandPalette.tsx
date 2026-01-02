@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Zap, Globe, MessageSquare, History, Bookmark as BookmarkIcon, Settings, LayoutList, Download, Printer, Maximize, ZoomIn, ZoomOut, Key, Monitor } from 'lucide-react';
+import { Search, Zap, Globe, MessageSquare, History, Bookmark as BookmarkIcon, Settings, LayoutList, Download, Printer, Maximize, ZoomIn, ZoomOut, Key, Monitor, Languages, FolderPlus } from 'lucide-react';
 import { Tab, Bookmark } from '../types';
 
 interface CommandPaletteProps {
@@ -17,7 +16,9 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isStormMode, tabs, book
 
   const ACTIONS = [
     { id: 'new-tab', icon: <Zap size={18} />, title: 'New Tab', shortcut: '⌘T', category: 'General' },
+    { id: 'new-group', icon: <FolderPlus size={18} />, title: 'New Tab Group', shortcut: '', category: 'General' },
     { id: 'summarize', icon: <MessageSquare size={18} />, title: 'Summarize Page', shortcut: '⌘S', category: 'AI' },
+    { id: 'translate', icon: <Languages size={18} />, title: 'Translate Page', shortcut: '⇧⌘X', category: 'AI' },
     { id: 'find', icon: <Search size={18} />, title: 'Find in Page', shortcut: '⌘F', category: 'General' },
     { id: 'passwords', icon: <Key size={18} />, title: 'Manage Vault (Passwords)', shortcut: '⌘L', category: 'Security' },
     { id: 'print', icon: <Printer size={18} />, title: 'Print Page', shortcut: '⌘P', category: 'General' },
